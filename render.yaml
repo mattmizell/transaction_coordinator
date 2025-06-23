@@ -3,7 +3,7 @@ services:
   - type: web
     name: tc-chat
     runtime: python
-    buildCommand: pip install -r requirements_chat.txt
+    buildCommand: pip install -r requirements.txt
     startCommand: python tc_chat_app.py
     envVars:
       - key: XAI_API_KEY
