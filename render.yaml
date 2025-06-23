@@ -1,0 +1,38 @@
+services:
+  # Transaction Coordinator Chat App
+  - type: web
+    name: tc-chat
+    runtime: python
+    buildCommand: pip install -r requirements_chat.txt
+    startCommand: python tc_chat_app.py
+    envVars:
+      - key: XAI_API_KEY
+        sync: false  # Add manually in Render dashboard
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tc-database
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+  # Optional: Background worker for email monitoring
+  - type: worker
+    name: tc-email-monitor
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python persistent_email_monitor_v2.py
+    envVars:
+      - key: XAI_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tc-database
+          property: connectionString
+
+databases:
+  - name: tc-database
+    plan: starter  # $7/month
+    databaseName: transaction_coordinator
+    user: tc_user
